@@ -4,34 +4,31 @@ import Collapsible from '../Collapsible'
 import './styles.css'
 
 const Container = () => {
-
   const [data, setData] = useState([])
-  const [arvoreDeItens, setArvoreDeItens] = useState(null)
 
   useEffect(() => {
     catchJSON()
   }, [])
 
-  useEffect(() => {
-    handleCreateCollapsible()
-  }, [])
-
   const catchJSON = async () => {
-    const response = await fetch("./data.json")
+    const response = await fetch('./data.json')
     const json = await response.json()
     setData(Object.values(json))
   }
 
-  const handleCreateCollapsible = () => {
-    setArvoreDeItens(data?.map((objeto) =>
-    {
-      return <Collapsible id={objeto.id} name={objeto.name} dependents={objeto.children} />
-    }))
-  }
-
   return (
     <div>
-      {arvoreDeItens}
+      {data.length > 0 &&
+        data?.map((objeto) =>
+            <Collapsible
+            id={objeto.id}
+            key={objeto.id}
+            name={objeto.name}
+            dependents={objeto.children}
+            idAncestrais={[objeto.id]}
+            idPai="origin"
+            />
+        )}
     </div>
   )
 }
