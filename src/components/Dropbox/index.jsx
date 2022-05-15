@@ -1,46 +1,9 @@
-// import React, { useState, useEffect } from 'react'
-// import Collapsible from '../Collapsible/index.jsx'
-
-// import './styles.css'
-
-// const Dropbox = ({ name, child, id}) => {
-
-//   useEffect(() => {
-//     handleCriarFilhos()
-//   }, [])
-
-//   const [checkboxSelecionado, setCheckboxSelecionado] = useState(false)
-//   const [checkboxFilhoSelecionado, setCheckboxFilhoSelecionado] = useState(false)
-//   const [abrirCaixaComFilhos, setAbrirCaixaComFilhos] = useState(false)
-//   const [filhos, setFilhos] = useState([])
-
-//   const handleCriarFilhos = () => {
-//     if (child) {
-//       setFilhos(Object.values(child).map((filho) => {
-//         return <Dropbox name={filho.name} child={filho.children} id={filho.id}/>
-//       }))
-//     }
-//   }
-
-//   return (
-//     <div>
-//       <Collapsible open title={name}>
-//         {filhos}
-//       </Collapsible>
-
-//     </div>
-//   )
-// }
-
-// export default Dropbox
-
 import React, { useState, useEffect } from 'react'
 import { FaChevronUp, FaChevronDown } from 'react-icons/fa'
-import { useNavigationContext } from '../../contexts/NavigationContext'
 
 import './styles.css'
 
-const Collaps = ({ name, dependents, id, idPai, selectedItens, manageSelectedItens }) => {
+const Dropbox = ({ name, dependents, id, idPai, selectedItens, manageSelectedItens }) => {
 
   const [abrirCollapsible, setAbrirCollapsible] = useState(false)
   const [checkboxSelecionado, setCheckboxSelecionado] = useState(false)
@@ -51,30 +14,36 @@ const Collaps = ({ name, dependents, id, idPai, selectedItens, manageSelectedIte
   }, [dependents])
 
   useEffect(() => {
-    if (selectedItens.some((item) => item === id)) {
-      setCheckboxSelecionado(true)
+      handleVerifyCheckbox(selectedItens, id)
+  }, [selectedItens, id])
+
+  const handleVerifyCheckbox = (objectItem, idSelected) => {
+    if (objectItem[idSelected]) {
+      setCheckboxSelecionado(objectItem[idSelected].state)
     } else {
       setCheckboxSelecionado(false)
     }
-  }, [selectedItens, id])
+
+  }
 
   const removeIdFromSelectedItens = () => {
-    const newArray = selectedItens.filter((item) => item !== id)
-    const teste = newArray.find((item) => item === id)
-    console.log(newArray)
-    console.log(teste)
-    console.log('This is remove')
-    manageSelectedItens(newArray)
+
   }
 
   const handleTogglePanel = () => {
     setAbrirCollapsible(!abrirCollapsible)
   }
+
+
   const handleClickCheckbox = () => {
-    if (checkboxSelecionado) {
+    if (checkboxSelecionado === "active") {
       removeIdFromSelectedItens()
+    } else if(checkboxSelecionado === "indeterminate"){
+
     } else {
-      manageSelectedItens([...selectedItens, id])
+      const objectDesintegrate = {}
+      objectDesintegrate[id] = {state: "active"}
+      manageSelectedItens({ ...selectedItens, ...objectDesintegrate })
     }
   }
 
@@ -99,7 +68,7 @@ const Collaps = ({ name, dependents, id, idPai, selectedItens, manageSelectedIte
         <div className="content">
           {filhos?.map(({ name, children, id }) => {
             return (
-              <Collaps
+              <Dropbox
                 name={name}
                 dependents={children}
                 id={id}
@@ -116,5 +85,5 @@ const Collaps = ({ name, dependents, id, idPai, selectedItens, manageSelectedIte
   )
 }
 
-export default Collaps
+export default Dropbox
 

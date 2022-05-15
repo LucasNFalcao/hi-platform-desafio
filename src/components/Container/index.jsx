@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Collapsible from '../Collapsible'
+import Dropbox from '../Dropbox'
 
 import './styles.css'
 
 const Container = () => {
   const [data, setData] = useState([])
+  const [selectedItens, setSelectedItens] = useState({})
 
   useEffect(() => {
     catchJSON()
@@ -16,17 +18,24 @@ const Container = () => {
     setData(Object.values(json))
   }
 
+  const manageSelectedItens = (item) => {
+    setSelectedItens(item)
+  }
+
   return (
     <div>
       {data.length > 0 &&
         data?.map((objeto) =>
-            <Collapsible
+            <Dropbox
             id={objeto.id}
             key={objeto.id}
             name={objeto.name}
             dependents={objeto.children}
             idAncestrais={[objeto.id]}
             idPai="origin"
+            selectedItens={selectedItens}
+            manageSelectedItens={manageSelectedItens}
+
             />
         )}
     </div>
